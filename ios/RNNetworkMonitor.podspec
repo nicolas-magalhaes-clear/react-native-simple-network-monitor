@@ -8,7 +8,10 @@ Pod::Spec.new do |s|
   s.author       = { 'Nicolas Magalhaes' => 'nicolas.magalhaes@clear.com.br' }
   s.platform     = :ios, '13.0'
   s.source       = { :path => '.' }
-  s.source_files = 'ios/**/*.{h,m,swift}'
+  s.source_files = 'ios/**/*.{swift,h,m}'
+  s.swift_version = '5.0'
+  s.frameworks   = 'Foundation'
+
   s.dependency 'React-Core'
   s.dependency 'SimpleNetworkMonitor', :git => 'https://github.com/nicolas-magalhaes-clear/simple-network-monitor-pod-package.git'
 end
