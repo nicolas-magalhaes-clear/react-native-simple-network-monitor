@@ -19,22 +19,39 @@ export const useNetwork = () => {
   const [networkStatus, setNetworkStatus] = useState<NetworkStatus>(DEFAULT_NETWORK_STATUS);
 
   useEffect(() => {
-    const { RNNetworkMonitor} = NativeModules
+    const { RNNetworkMonitor } = NativeModules
 
-    if(Platform.OS !== "ios" || !RNNetworkMonitor) {
+    console.log("Platform:", Platform.OS);
+    console.log("RNNetworkMonitor available:", !!RNNetworkMonitor);
+
+    if (Platform.OS !== "ios" || !RNNetworkMonitor) {
+      console.log("Early return - not iOS or no module");
       return
     }
-    const emitter = new NativeEventEmitter(RNNetworkMonitor)
 
-    const sub = emitter.addListener("NetworkStatusChanged", (status: NetworkStatus) => {
-      setNetworkStatus(status)
+    const emitter = new NativeEventEmitter(RNNetworkMonitor)
+    console.log("Emitter created");
+
+    const sub = emitter.addListener("NetworkStatusChanged", (data: any) => {
+      console.log("✅ Received network status:", data);
+      setNetworkStatus(data)
     })
 
+    console.log("Listener added");
+
+    // Adicionar um pequeno delay para garantir que o listener está configurado
+    const timer = setTimeout(() => {
+      console.log("Starting monitoring...");
+      RNNetworkMonitor.startMonitoring()
+    }, 100);
+
     return () => {
+      clearTimeout(timer);
+      console.log("Cleanup - removing listener and stopping monitoring");
       sub.remove()
       RNNetworkMonitor.stopMonitoring()
     }
   }, [])
 
-  return {networkStatus}
+  return { networkStatus }
 }

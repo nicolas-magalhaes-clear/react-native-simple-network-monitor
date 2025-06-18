@@ -11,9 +11,20 @@ class RNNetworkMonitor: RCTEventEmitter, NetworkMonitorDelegate {
     }
 
     @objc
-    func startMonitoring() {
-        NetworkMonitor.shared.startMonitoring()
-    }
+func startMonitoring() {
+    print("📱 Swift: startMonitoring called")
+    NetworkMonitor.shared.startMonitoring()
+}
+
+func networkStatusDidChange(_ status: NetworkStatus) {
+    print("📱 Swift: networkStatusDidChange called with status: \(status)")
+    let statusData: [String: Any] = [
+        "status": status.rawValue,
+        "isConnected": status != .disconnected && status != .unknown
+    ]
+    print("📱 Swift: sending event with data: \(statusData)")
+    sendEvent(withName: "NetworkStatusChanged", body: statusData)
+}
 
     @objc
     func stopMonitoring() {
@@ -28,11 +39,5 @@ class RNNetworkMonitor: RCTEventEmitter, NetworkMonitorDelegate {
         return ["NetworkStatusChanged"]
     }
 
-    func networkStatusDidChange(_ status: NetworkStatus) {
-        let statusData: [String: Any] = [
-            "status": status.rawValue,
-            "isConnected": status != .disconnected && status != .unknown
-        ]
-        sendEvent(withName: "NetworkStatusChanged", body: statusData)
-    }
+    
 }
