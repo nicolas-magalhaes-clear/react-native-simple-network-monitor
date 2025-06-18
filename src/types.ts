@@ -11,3 +11,7 @@ export type NetworkStatus = {
   isRoaming: boolean;
 }
 
+export interface NetworkMonitorInterface {
+  startMonitoring(): void
+  stopMonitoring(): void
+}

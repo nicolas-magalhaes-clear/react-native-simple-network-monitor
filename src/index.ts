@@ -1,10 +1,8 @@
 import { NativeModules } from 'react-native'
-
-export interface NetworkMonitorInterface {
-  startMonitoring(): void
-  stopMonitoring(): void
-}
+import { NetworkMonitorInterface } from './types'
+import { useNetwork } from './use-network'
 
 const { RNNetworkMonitor } = NativeModules
 
 export default RNNetworkMonitor as NetworkMonitorInterface
+export { NetworkMonitorInterface, useNetwork }
