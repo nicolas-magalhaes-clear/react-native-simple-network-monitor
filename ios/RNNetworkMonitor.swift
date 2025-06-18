@@ -28,7 +28,11 @@ class RNNetworkMonitor: RCTEventEmitter, NetworkMonitorDelegate {
         return ["NetworkStatusChanged"]
     }
 
-    func networkStatusDidChange(_ data: NetworkStatusData) {
-        sendEvent(withName: "NetworkStatusChanged", body: data.toDict())
+    func networkStatusDidChange(_ status: NetworkStatus) {
+        let statusData: [String: Any] = [
+            "status": status.rawValue,
+            "isConnected": status != .disconnected && status != .unknown
+        ]
+        sendEvent(withName: "NetworkStatusChanged", body: statusData)
     }
 }
