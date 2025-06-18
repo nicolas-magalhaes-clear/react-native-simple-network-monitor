@@ -10,3 +10,7 @@ export type NetworkStatus = {
     isLowPowerMode: boolean;
     isRoaming: boolean;
 };
+export interface NetworkMonitorInterface {
+    startMonitoring(): void;
+    stopMonitoring(): void;
+}
