@@ -8,9 +8,13 @@
     "prepare": "npm run build"
   },
   "files": [
-    "lib/",
-    "ios/"
-  ],
+  "lib",
+  "ios",
+  "src",
+  "README.md",
+  "RNNetworkMonitor.podspec"
+],
+
   "keywords": [],
   "author": "",
   "license": "ISC",
