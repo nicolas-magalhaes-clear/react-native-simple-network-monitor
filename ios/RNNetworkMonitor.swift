@@ -1,43 +1,48 @@
 import Foundation
 import SimpleNetworkMonitor
+import React
 
 @objc(RNNetworkMonitor)
-class RNNetworkMonitor: NSObject {
-  private var monitor: NetworkMonitor?
+class RNNetworkMonitor: RCTEventEmitter, NetworkMonitorDelegate {
+
+  override init() {
+    super.init()
+    NetworkMonitor.shared.delegate = self
+  }
 
   @objc
   func startMonitoring() {
-    monitor = NetworkMonitor()
-    monitor?.startMonitoring()
+    NetworkMonitor.shared.startMonitoring()
   }
 
   @objc
   func stopMonitoring() {
-    monitor?.stopMonitoring()
+    NetworkMonitor.shared.stopMonitoring()
   }
 
-  @objc
-  static func requiresMainQueueSetup() -> Bool {
-    return false
+  override class func requiresMainQueueSetup() -> Bool {
+    return true
   }
 
   override func supportedEvents() -> [String]! {
-  return ["NetworkStatusChanged"]
+    return ["NetworkStatusChanged"]
   }
 
-  func emitStatusChange(status: NetworkStatus) {
-    let statusDict: [String: Any] = [
-      "connectionType": status.connectionType.rawValue,
-      "isCellular": status.isCellular,
-      "packetLoss": status.packetLoss,
-      "latency": status.latency,
-      "isWiFi": status.isWiFi,
-      "isEthernet": status.isEthernet,
-      "isVPN": status.isVPN,
-      "isAirplaneMode": status.isAirplaneMode,
-      "isLowPowerMode": status.isLowPowerMode,
-      "isRoaming": status.isRoaming,
-    ]
-    sendEvent(withName: "NetworkStatusChanged", body: statusDict)
+  func networkStatusDidChange(_ status: NetworkStatus) {
+    let statusString: String
+    switch status {
+    case .connectedViaWiFi:
+      statusString = "wifi"
+    case .connectedViaCellular:
+      statusString = "cellular"
+    case .disconnected:
+      statusString = "disconnected"
+    case .unknown:
+      fallthrough
+    default:
+      statusString = "unknown"
+    }
+
+    sendEvent(withName: "NetworkStatusChanged", body: ["status": statusString])
   }
 }
