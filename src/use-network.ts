@@ -21,7 +21,7 @@ export const useNetwork = () => {
   useEffect(() => {
     const { RNNetworkMonitor} = NativeModules
 
-    if(Platform.OS === "ios" || !RNNetworkMonitor) {
+    if(Platform.OS !== "ios" || !RNNetworkMonitor) {
       return
     }
     const emitter = new NativeEventEmitter(RNNetworkMonitor)
