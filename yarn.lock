@@ -10405,10 +10405,11 @@ __metadata:
     react-native: 0.79.2
     react-native-builder-bob: ^0.40.8
     react-native-monorepo-config: ^0.1.9
+    react-native-simple-network-monitor: "*"
   languageName: unknown
   linkType: soft
 
-"react-native-simple-network-monitor@workspace:.":
+"react-native-simple-network-monitor@*, react-native-simple-network-monitor@workspace:.":
   version: 0.0.0-use.local
   resolution: "react-native-simple-network-monitor@workspace:."
   dependencies:

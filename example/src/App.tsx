@@ -1,12 +1,13 @@
-import { Text, View, StyleSheet } from 'react-native';
-import { multiply } from 'react-native-simple-network-monitor';
-
-const result = multiply(3, 7);
+import { View, StyleSheet } from 'react-native';
+import { Text } from 'react-native';
+import { useNetwork } from 'react-native-simple-network-monitor';
 
 export default function App() {
+  const data = useNetwork();
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Text>Hello World</Text>
+      <Text>{JSON.stringify(data)}</Text>
     </View>
   );
 }
