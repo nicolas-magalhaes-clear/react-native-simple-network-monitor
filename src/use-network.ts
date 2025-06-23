@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import type { NetworkStatus, NetworkStatusResult } from "./types";
-import { NativeEventEmitter, Platform } from "react-native";
-import NativeReactNativeSimpleNetworkMonitor from "./NativeReactNativeSimpleNetworkMonitor";
+import { useEffect, useRef, useState } from 'react';
+import type { NetworkStatus, NetworkStatusResult } from './types';
+import { NativeEventEmitter, Platform } from 'react-native';
+import NativeReactNativeSimpleNetworkMonitor from './NativeReactNativeSimpleNetworkMonitor';
 
-export function useNetwork(){
+export function useNetwork() {
   const [networkStatus, setNetworkStatus] = useState<NetworkStatus>({
     isConnected: false,
     type: 'unknown',
@@ -15,7 +15,9 @@ export function useNetwork(){
   const eventEmitterRef = useRef<NativeEventEmitter | null>(null);
   const subscriptionRef = useRef<any>(null);
 
-  const convertNativeStatus = (nativeStatus: NetworkStatusResult): NetworkStatus => {
+  const convertNativeStatus = (
+    nativeStatus: NetworkStatusResult
+  ): NetworkStatus => {
     return {
       isConnected: nativeStatus.isConnected,
       type: (nativeStatus.type as NetworkStatus['type']) || 'unknown',
@@ -42,7 +44,8 @@ export function useNetwork(){
     // Obter status inicial
     const getInitialStatus = async () => {
       try {
-        const initialStatus = await NativeReactNativeSimpleNetworkMonitor.getCurrentStatus();
+        const initialStatus =
+          await NativeReactNativeSimpleNetworkMonitor.getCurrentStatus();
         handleNetworkChange(initialStatus);
       } catch (error) {
         console.warn('Failed to get initial network status:', error);
@@ -60,7 +63,7 @@ export function useNetwork(){
 
     // Iniciar monitoramento
     NativeReactNativeSimpleNetworkMonitor.startMonitoring();
-    
+
     // Obter status inicial
     getInitialStatus();
 
@@ -73,10 +76,10 @@ export function useNetwork(){
     };
   }, []);
 
-
   const refresh = async (): Promise<NetworkStatus> => {
     try {
-      const status = await NativeReactNativeSimpleNetworkMonitor.getCurrentStatus();
+      const status =
+        await NativeReactNativeSimpleNetworkMonitor.getCurrentStatus();
       const convertedStatus = convertNativeStatus(status);
       setNetworkStatus(convertedStatus);
       return convertedStatus;
@@ -91,6 +94,4 @@ export function useNetwork(){
     isLoading,
     refresh,
   };
-
-
 }
