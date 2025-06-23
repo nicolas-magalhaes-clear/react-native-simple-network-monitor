@@ -1,0 +1,4 @@
+module ReactNativeSimpleNetworkMonitor {
+  header "ReactNativeSimpleNetworkMonitor.h"
+  requires objc
+} 

@@ -1,9 +1,8 @@
 import Foundation
-import React
 import SimpleNetworkMonitor
 
-@objc(ReactNativeSimpleNetworkMonitor)
-class ReactNativeSimpleNetworkMonitor: RCTEventEmitter {
+@objc(ReactNativeSimpleNetworkMonitorSwift)
+class ReactNativeSimpleNetworkMonitorSwift: NSObject {
     
     private let networkMonitor = NetworkMonitor.shared
     
@@ -12,35 +11,26 @@ class ReactNativeSimpleNetworkMonitor: RCTEventEmitter {
         setupNetworkMonitor()
     }
     
-    // MARK: - React Native Module
-    @objc
-    static func requiresMainQueueSetup() -> Bool {
-        return true
-    }
+    // MARK: - Swift Methods for Objective-C bridge
     
-    // MARK: - EventEmitter
-    override func supportedEvents() -> [String]! {
-        return ["onNetworkChange"]
-    }
-    
-    // MARK: - Exported Methods
-    @objc
-    func startMonitoring(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc func startMonitoringWithResolve(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         networkMonitor.startMonitoring()
         resolve(nil)
     }
 
-    @objc
-    func stopMonitoring(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc func stopMonitoringWithResolve(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         networkMonitor.stopMonitoring()
         resolve(nil)
     }
 
-    @objc
-    func getCurrentStatus(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc func getCurrentStatusWithResolve(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         let status = networkMonitor.currentStatus
         let result = createStatusDictionary(from: status)
         resolve(result)
+    }
+    
+    @objc func supportedEvents() -> [String] {
+        return ["onNetworkChange"]
     }
     
     private func setupNetworkMonitor() {
@@ -53,10 +43,15 @@ class ReactNativeSimpleNetworkMonitor: RCTEventEmitter {
     }
     
     @objc private func networkStatusChanged(_ notification: Notification) {
-        guard hasListeners else { return }
+        // This will be handled by the Objective-C module
         let status = networkMonitor.currentStatus
         let statusDict = createStatusDictionary(from: status)
-        sendEvent(withName: "onNetworkChange", body: statusDict)
+        
+        // Post notification that the Objective-C module can listen to
+        NotificationCenter.default.post(
+            name: NSNotification.Name("ReactNativeSimpleNetworkMonitorStatusChanged"),
+            object: statusDict
+        )
     }
 
     private func createStatusDictionary(from status: NetworkStatus) -> [String: Any] {
